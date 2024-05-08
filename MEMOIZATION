@@ -1,0 +1,48 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int solve(int idx, vector<int>& height, vector<int>& dp){
+
+
+if(idx==0)
+
+{dp[0]=0;
+    return 0;
+}
+
+if(idx==1)
+{
+    dp[1]=abs(height[1]-height[0]);
+    return dp[1];
+}
+if(dp[idx]!=-1)
+return dp[idx];
+
+int l=solve(idx-1,height,dp)+abs(height[idx]-height[idx-1]);
+int r=solve(idx-2,height,dp)+abs(height[idx]-height[idx-2]);
+
+dp[idx]=min(l,r);
+
+return dp[idx];
+
+
+
+
+}
+
+
+
+
+
+
+int main() {
+
+  vector<int> height{30,10,60 , 10 , 60 , 50};
+  int n=height.size();
+  vector<int> dp(n,-1);
+  cout<<solve(n-1,height,dp);
+  for(int i=0;i<n;i++)
+  cout<<dp[i]<<" ";
+  
+}
