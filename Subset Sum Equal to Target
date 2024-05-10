@@ -1,0 +1,130 @@
+1. MEMOIZATION
+#include <bits/stdc++.h> 
+
+bool f(int idx,int k, vector<int>&arr,vector<vector<int>>&dp){
+
+    if(k==0)
+    {
+      
+        return 1;
+    }
+
+    if(idx==0)
+    {
+        
+        return (arr[0]==k);
+    }
+
+    if(dp[idx][k]!=-1)
+    return dp[idx][k];
+
+bool nottake=f(idx-1,k,arr,dp);
+
+bool take=false;
+
+if(k>=arr[idx])
+take=f(idx-1,k-arr[idx],arr,dp);
+
+dp[idx][k]=(take||nottake);
+return (take||nottake);
+
+
+}
+
+
+
+bool subsetSumToK(int n, int k, vector<int> &arr) {
+   
+int idx=n-1;
+
+vector<vector<int>>dp(n,vector<int>(k+1,-1));
+
+
+return f(idx,k,arr,dp);
+
+   
+}
+
+2. TABULATION
+
+#include <bits/stdc++.h> 
+
+
+
+
+bool subsetSumToK(int n, int k, vector<int> &arr) {
+
+
+vector<vector<bool>>dp(n,vector<bool>(k+1,0));
+
+for(int i=0;i<n;i++)
+{
+    dp[i][0]=1;
+}
+
+dp[0][arr[0]]=1;
+
+for(int i=1;i<n;i++)
+{
+    for(int j=1;j<=k;j++)
+    {
+    bool take=0;
+        if((j-arr[i])>=0)
+       take=dp[i-1][j-arr[i]];
+       
+       bool nottake=dp[i-1][j];
+
+        dp[i][j]= take|nottake;
+
+
+    }
+}
+
+
+return dp[n-1][k];
+
+
+
+   
+}
+
+
+3 SPACE OPTIMIZATION
+
+#include <bits/stdc++.h> 
+
+
+
+
+bool subsetSumToK(int n, int k, vector<int> &arr) {
+
+
+vector<bool>prey(k+1,0),cur(k+1,0);
+
+prey[0]=1;
+
+prey[arr[0]]=1;
+cur[0]=1;
+for(int i=1;i<n;i++){
+for(int j=1;j<=k;j++){
+
+bool take=0;
+if(arr[i]<=j)
+take=prey[j-arr[i]];
+
+bool nottake=prey[j];
+
+cur[j]=(take||nottake);
+
+
+
+}
+prey=cur;
+}
+
+
+return cur[k]; 
+
+   
+}
+
