@@ -1,0 +1,169 @@
+1. MEMOIZATION
+
+#include <bits/stdc++.h> 
+
+int f(int idx,int w,vector<int>&weight, vector<int>&value,vector<vector<int>>&dp)
+{
+	if(idx==0)
+	{
+		if(weight[idx]<=w)
+		return value[idx];
+		else
+		return 0;
+	}
+
+if(dp[idx][w]!=-1)
+return dp[idx][w];
+
+
+int take=0;
+   if(weight[idx] <= w) {
+    take += value[idx];
+	take+=f(idx-1,w-weight[idx],weight,value,dp);
+  }
+
+
+int nottake=f(idx-1,w,weight,value,dp);
+
+
+dp[idx][w]=max(take,nottake);
+return max(take,nottake);
+
+}
+
+
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) 
+{
+	int w=maxWeight;
+
+vector<vector<int>>dp(n,vector<int>(w+1,-1));
+
+int ans=f(n-1,w,weight,value,dp);
+
+return ans;
+	
+}
+
+
+2. TABULATION
+
+#include <bits/stdc++.h> 
+
+
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) 
+{
+	int w=maxWeight;
+    
+	vector<vector<int>>dp(n,vector<int>(w+1,0));
+
+	if(weight[0]<=w)
+	{
+		for(int i=weight[0];i<=w;i++)
+		dp[0][i]=value[0];
+
+	}
+
+for(int i=1;i<n;i++)
+{
+	for(int j=0;j<=w;j++)
+	{
+int take=0;
+if(weight[i]<=j)
+{
+	take=value[i];
+	take+=dp[i-1][j-weight[i]];
+}
+int nottake=dp[i-1][j];
+
+dp[i][j]=max(take,nottake);
+	}
+}
+
+return dp[n-1][w];	
+}
+
+
+3. SPACE OPTIMIZATION IN 2 ARRAY
+
+
+
+#include <bits/stdc++.h> 
+
+
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) 
+{
+	int w=maxWeight;
+
+vector<int>prey(w+1,0),cur(w+1,0);
+
+
+if(weight[0]<=w)
+{
+	for(int i=weight[0];i<=w;i++)
+	{
+		prey[i]=value[0];
+	}
+}
+for(int i=1;i<n;i++)
+{
+	for(int j=0;j<=w;j++)
+	{
+int take=0;
+
+if(weight[i]<=j)
+{
+	take=value[i];
+	take+=prey[j-weight[i]];
+}
+int nottake=prey[j];
+
+cur[j]=max(take,nottake);
+
+	}
+prey=cur;
+}
+return prey[w];	
+}
+
+4. SPACE OPTIMIZATION IN ONE ARRAY
+
+
+#include <bits/stdc++.h> 
+
+
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) 
+{
+	int w=maxWeight;
+
+vector<int>prey(w+1,0);
+
+
+if(weight[0]<=w)
+{
+	for(int i=weight[0];i<=w;i++)
+	{
+		prey[i]=value[0];
+	}
+}
+
+for(int i=1;i<n;i++)
+{
+	for(int j=w;j>=0;j--)
+	{
+int take=0;
+
+if(weight[i]<=j)
+{
+	take=value[i];
+	take+=prey[j-weight[i]];
+}
+int nottake=prey[j];
+
+prey[j]=max(take,nottake);
+	}
+
+}
+
+return prey[w];
+}
+
