@@ -1,0 +1,127 @@
+1. MEMOIZATION
+
+#include <bits/stdc++.h>
+
+int f(int idx, vector<int> &num, int x,vector<vector<int>>&dp) {
+
+if(idx==0)
+{
+    if(x%num[idx]!=0)
+    return 1e9;
+    else
+    return x/num[idx];
+}
+
+if(dp[idx][x]!=-1)
+return dp[idx][x];
+
+int take=INT_MAX;
+
+if(num[idx]<=x)
+{
+ 
+ take=1+f(idx,num,x-num[idx],dp);
+
+}
+
+int nottake=f(idx-1,num,x,dp);
+
+int ans=min(take,nottake);
+
+dp[idx][x]=ans;
+return ans;
+
+
+}
+
+int minimumElements(vector<int> &num, int x) {
+
+int n=num.size();
+vector<vector<int>>dp(n,vector<int>(x+1,-1));
+
+int ans=f(n-1,num,x,dp);
+
+if(ans>=1e9)
+return -1;
+else
+return ans;
+
+}
+
+
+2. TABULATION
+
+#include <bits/stdc++.h>
+int minimumElements(vector<int> &num, int x) {
+
+int n=num.size();
+vector<vector<int>>dp(n,vector<int>(x+1,0));
+
+for(int i=0;i<=x;i++)
+{
+if( i%num[0]!=0)
+dp[0][i]=1e9;
+else
+dp[0][i]=i/num[0];
+
+}
+
+for(int i=1;i<n;i++)
+{
+    for(int j=0;j<=x;j++){
+
+int take=INT_MAX;
+if(num[i]<=j)
+take=1+dp[i][j-num[i]];
+
+int nottake=dp[i-1][j];
+
+dp[i][j]=min(take,nottake);
+
+    }
+}
+if(dp[n-1][x]>=1e9)
+return -1;
+return dp[n-1][x];
+}
+
+
+3. SPACE OPTIMIZATION
+
+
+#include <bits/stdc++.h>
+int minimumElements(vector<int> &num, int x) {
+
+int n=num.size();
+vector<int>prey(x+1,0),cur(x+1,0);
+
+for(int i=0;i<=x;i++)
+{
+if( i%num[0]!=0)
+prey[i]=1e9;
+else
+prey[i]=i/num[0];
+
+}
+
+for(int i=1;i<n;i++)
+{
+    for(int j=0;j<=x;j++){
+
+int take=INT_MAX;
+if(num[i]<=j)
+take=1+cur[j-num[i]];
+
+int nottake=prey[j];
+
+cur[j]=min(take,nottake);
+    }
+    prey=cur;
+}
+if(prey[x]>=1e9)
+return -1;
+return prey[x];
+}
+
+
+
